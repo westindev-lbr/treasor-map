@@ -29,8 +29,8 @@ describe("Read Input file", () => {
   });
 
   it("should have MOUNTAIN cells", () => {
-    expect(tm.config).toBeTruthy();
-    expect(tm.config).toEqual(expect.arrayContaining([{ key: "M", x: 1, y: 1 } as Row]));
+    expect(tm.pieces).toBeTruthy();
+    expect(tm.pieces).toEqual(expect.arrayContaining([{ key: "M", x: 1, y: 1 } as Row]));
   });
 
   it("should the map has a MOUNTAIN in pos(1,1) and pos(2,2)", () => {
@@ -39,8 +39,8 @@ describe("Read Input file", () => {
   });
 
   it("should have TREASOR cells", () => {
-    expect(tm.config).toBeTruthy();
-    expect(tm.config).toEqual(expect.arrayContaining([{ key: "T", x: 0, y: 3, nb: 2 } as Row]));
+    expect(tm.pieces).toBeTruthy();
+    expect(tm.pieces).toEqual(expect.arrayContaining([{ key: "T", x: 0, y: 3, nb: 2 } as Row]));
   });
   it("should the map has a TREASOR in pos(0,3) and nb : 2", () => {
     expect(tm.map[3][0].state).toBe(State.TREASOR);
@@ -51,8 +51,8 @@ describe("Read Input file", () => {
     expect((tm.map[3][1] as TreasorCell).nb).toBe(1);
   });
   it("should have an ADVENTURE", () => {
-    expect(tm.config).toBeTruthy();
-    expect(tm.config).toEqual(
+    expect(tm.pieces).toBeTruthy();
+    expect(tm.pieces).toEqual(
       expect.arrayContaining([{ key: "A", name: "Indiana", x: 1, y: 1, orientation: "S", path: "AADADA" } as Row])
     );
   });
