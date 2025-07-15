@@ -1,0 +1,22 @@
+{
+    "name": "tsj",
+    "version": "1.0.0",
+    "scripts": {
+        "dev": "nodemon --exec ts-node ./src/script.ts",
+        "start": "tsc && node ./build/src/script.js",
+        "build": "tsc --project ./tsconfig.json",
+        "test": "jest --watchAll -c ./jest.unit.ts",
+        "jest": "jest -c ./jest.unit.ts",
+        "test:coverage": "jest --coverage -c ./jest.unit.ts"
+    },
+    "author": "westindev",
+    "devDependencies": {
+        "@types/jest": "^30.0.0",
+        "@types/node": "^24.0.13",
+        "jest": "^30.0.4",
+        "nodemon": "^3.1.10",
+        "ts-jest": "^29.4.0",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.8.3"
+    }
+}
