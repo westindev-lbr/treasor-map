@@ -1,5 +1,7 @@
+import { Dir } from "fs";
 import { Adventurer } from "../src/adventurer";
-import { Direction } from "../src/enum";
+import { Direction, State } from "../src/enum";
+import { TreasorCell } from "../src/interface";
 import { TreasorMap } from "../src/treasormap";
 
 describe("Adventurer Test Suite", () => {
@@ -55,6 +57,44 @@ describe("Adventurer Test Suite", () => {
       tm.map[startPos.y][startPos.x].perso = adventurer;
       tm.map[startPos.y][startPos.x].perso!.move(tm.map, startPos);
       expect(tm.map[endPos.y][endPos.x].perso).toBeDefined();
+    }
+  );
+
+  it.each([
+    ["Indiana", { x: 1, y: 1 }, "S", "AADADA", { x: 0, y: 3 }, 1, 1],
+    ["Indiana", { x: 1, y: 1 }, "S", "AADADADAGA", { x: 1, y: 2 }, 2, 0],
+  ])(
+    "should %s startpos: %s dir: %s with path %s arrive at position %s with Mountain and Treasor",
+    async (name, startPos, direction, path, endPos, expectedNbTreasor, nbTreasor) => {
+      const adventurer = new Adventurer(name, direction, path);
+      const tm = new TreasorMap();
+      await tm.parseInputFile("tests/test-adv3.txt");
+      tm.init();
+      tm.map[startPos.y][startPos.x].perso = adventurer;
+      tm.map[startPos.y][startPos.x].perso!.move(tm.map, startPos);
+      const treasorCell = tm.map[2][1] as TreasorCell;
+      expect(tm.map[endPos.y][endPos.x].perso).toBeDefined();
+      expect(treasorCell.state).toEqual(State.TREASOR);
+      expect(adventurer.items.get(State.TREASOR)).toBe(expectedNbTreasor);
+      expect(treasorCell.nb).toBe(nbTreasor);
+    }
+  );
+
+  it.each([["Lara", { x: 1, y: 1 }, "S", { x: 0, y: 3 }, 3]])(
+    "should %s startpos: %s dir: %s must arrive at position %s with %s Treasors",
+    async (name, startPos, direction, endPos, expectedNbTreasor) => {
+      const tm = new TreasorMap();
+      await tm.parseInputFile("tests/test-adv4.txt");
+      tm.init();
+      const lara = tm.map[startPos.y][startPos.x].perso;
+      expect(lara).toBeDefined();
+      expect(lara?.name).toBe(name);
+      expect(lara?.direction).toBe(direction);
+
+      tm.map[startPos.y][startPos.x].perso!.move(tm.map, startPos);
+
+      expect(tm.map[endPos.y][endPos.x].perso).toBeDefined();
+      expect(lara?.items.get(State.TREASOR)).toBe(expectedNbTreasor);
     }
   );
 });
