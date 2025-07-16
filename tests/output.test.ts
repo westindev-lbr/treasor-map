@@ -1,5 +1,5 @@
 import * as fs from "fs/promises";
-import { TreasureMap } from "../src/treasormap";
+import { TreasureMap } from "../src/treasuremap";
 
 describe("Output Test Suite", () => {
   it("should return an output format in file", async () => {

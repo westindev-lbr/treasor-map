@@ -1,7 +1,7 @@
 import { Adventurer } from "../src/adventurer";
 import { State } from "../src/enum";
 import { Row } from "../src/interface";
-import { TreasureMap } from "../src/treasormap";
+import { TreasureMap } from "../src/treasuremap";
 
 describe("Read Input file", () => {
   const tm = new TreasureMap();

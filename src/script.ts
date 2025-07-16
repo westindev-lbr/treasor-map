@@ -1,5 +1,5 @@
 import { INPUT_FILE, OUTPUT_FILE } from "./constants";
-import { TreasureMap } from "./treasormap";
+import { TreasureMap } from "./treasuremap";
 
 async function main() {
   const tm = new TreasureMap();

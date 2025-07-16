@@ -1,3 +1,4 @@
+import { FORWARD, LEFT, RIGHT } from "./constants";
 import { Direction, State } from "./enum";
 import { Cell } from "./interface";
 
@@ -8,11 +9,9 @@ export class Adventurer {
   items: Map<string, number>;
   position: { x: number; y: number };
 
-  constructor(name: string, direction: string, path: string, startPos: { x: number; y: number }) {
+  constructor(name: string, direction: Direction, path: string, startPos: { x: number; y: number }) {
     this.name = name;
-    this.direction = Object.values(Direction).includes(direction as Direction)
-      ? (direction as Direction)
-      : Direction.DEFAULT;
+    this.direction = direction;
     this.path = path;
     this.items = new Map<string, number>([[State.TREASURE, 0]]);
     this.position = startPos;
@@ -21,29 +20,29 @@ export class Adventurer {
   move(map: Array<Cell[]>) {
     for (let move of this.path) {
       switch (move) {
-        case "A":
-          this.advance(map);
+        case FORWARD:
+          this.forward(map);
           break;
-        case "G":
+        case LEFT:
           this.turnLeft();
           break;
-        case "D":
+        case RIGHT:
           this.turnRight();
           break;
         default:
-          console.warn(`Invalid move: ${move}`);
+          console.warn(`Invalid move: ${move} for ${this.name}`);
       }
     }
   }
 
-  private advance(map: Array<Cell[]>): void {
+  private forward(map: Array<Cell[]>): void {
     const { x, y } = this.position;
     switch (this.direction) {
       case Direction.NORTH:
         if (y > 0 && map[y - 1][x].state !== State.MOUNTAIN) {
           const ncell = map[y - 1][x];
-          if (this.hasTreasor(ncell)) {
-            ncell.nb!--;
+          if (ncell.nb && this.hasTreasure(ncell)) {
+            ncell.nb--;
             this.addItem(State.TREASURE, 1);
           }
           map[y][x].perso = undefined;
@@ -54,8 +53,8 @@ export class Adventurer {
       case Direction.SOUTH:
         if (y < map.length - 1 && map[y + 1][x].state !== State.MOUNTAIN) {
           const scell = map[y + 1][x];
-          if (this.hasTreasor(scell)) {
-            scell.nb!--;
+          if (scell.nb && this.hasTreasure(scell)) {
+            scell.nb--;
             this.addItem(State.TREASURE, 1);
           }
           map[y][x].perso = undefined;
@@ -66,8 +65,8 @@ export class Adventurer {
       case Direction.EAST:
         if (x < map[0].length - 1 && map[y][x + 1].state !== State.MOUNTAIN) {
           const ecell = map[y][x + 1];
-          if (this.hasTreasor(ecell)) {
-            ecell.nb!--;
+          if (ecell.nb && this.hasTreasure(ecell)) {
+            ecell.nb--;
             this.addItem(State.TREASURE, 1);
           }
           map[y][x].perso = undefined;
@@ -78,8 +77,8 @@ export class Adventurer {
       case Direction.WEST:
         if (x > 0 && map[y][x - 1].state !== State.MOUNTAIN) {
           const wcell = map[y][x - 1];
-          if (this.hasTreasor(wcell)) {
-            wcell.nb!--;
+          if (wcell.nb && this.hasTreasure(wcell)) {
+            wcell.nb--;
             this.addItem(State.TREASURE, 1);
           }
           map[y][x].perso = undefined;
@@ -129,7 +128,7 @@ export class Adventurer {
     this.items.set(type, nbItem + nb);
   }
 
-  private hasTreasor(cell: Cell): boolean {
+  private hasTreasure(cell: Cell): boolean {
     return cell.state === State.TREASURE && cell.nb! > 0;
   }
 }
