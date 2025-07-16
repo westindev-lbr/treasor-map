@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "scripts": {
         "dev": "nodemon --exec ts-node ./src/script.ts",
-        "start": "tsc && node ./build/src/script.js",
+        "start": "tsc && node ./build/script.js",
         "build": "tsc --project ./tsconfig.json",
         "test": "jest --watchAll -c ./jest.unit.ts",
         "jest": "jest -c ./jest.unit.ts",
