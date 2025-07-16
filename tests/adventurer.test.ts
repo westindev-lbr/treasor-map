@@ -4,15 +4,14 @@ import { TreasureMap } from "../src/treasuremap";
 
 describe("Adventurer Test Suite", () => {
   it.each([
-    ["Indiana", Direction.SOUTH, "AAG", Direction.SOUTH],
-    ["Indiana", Direction.NORTH, "AAG", Direction.NORTH],
-    ["Indiana", Direction.EAST, "AAG", Direction.EAST],
-    ["Indiana", Direction.WEST, "AAG", Direction.WEST],
-    ["Indiana", Direction.DEFAULT, "AAG", Direction.DEFAULT],
-    ["Indiana", Direction.DEFAULT, "AAG", Direction.DEFAULT],
+    ["Indiana", Direction.SOUTH, Direction.SOUTH, "AAG"],
+    ["Indiana", Direction.NORTH, Direction.NORTH, "AAG"],
+    ["Indiana", Direction.EAST, Direction.EAST, "AAG"],
+    ["Indiana", Direction.WEST, Direction.WEST, "AAG"],
+    ["Indiana", Direction.DEFAULT, Direction.DEFAULT, "AAG"],
   ])(
-    "should %s have the right direction from input: %s with path: %s to expected direction: %s",
-    (name, direction, path, expectedOrientation) => {
+    "should correctly initialize direction for %s: input=%s → expected=%s",
+    (name, direction, expectedOrientation, path) => {
       const adventurer = new Adventurer(name, direction, path, { x: 1, y: 1 });
       expect(adventurer.direction).toBe(expectedOrientation);
       if (Object.values(Direction).includes(adventurer.direction)) {
@@ -33,7 +32,7 @@ describe("Adventurer Test Suite", () => {
     ["Indiana", { x: 1, y: 1 }, Direction.SOUTH, "GA", { x: 2, y: 1 }, Direction.EAST],
     ["Indiana", { x: 1, y: 1 }, Direction.SOUTH, "AADADA", { x: 0, y: 2 }, Direction.NORTH],
   ])(
-    "should %s startpos: %s dir: %s with path %s arrive at position %s",
+    "should move %s from %j facing %s with path '%s' to position %j and face %s",
     async (name, startPos, direction, path, endPos, expectedDir) => {
       const adventurer = new Adventurer(name, direction, path, startPos);
       const tm = new TreasureMap();
@@ -45,9 +44,9 @@ describe("Adventurer Test Suite", () => {
       expect(tm.map[endPos.y][endPos.x].perso?.direction).toBe(expectedDir);
     }
   );
-  it.each([["Indiana", { x: 1, y: 1 }, Direction.SOUTH, "AADADA", { x: 0, y: 3 }]])(
-    "should %s startpos: %s dir: %s with path %s arrive at position %s whith Mountain obstacle",
-    async (name, startPos, direction, path, endPos) => {
+  it.each([["Indiana", { x: 1, y: 1 }, "AADADA", Direction.SOUTH, { x: 0, y: 3 }]])(
+    "should stop %s at %j with path '%s' facing %s when blocked by mountains and end at %j",
+    async (name, startPos, path, direction, endPos) => {
       const adventurer = new Adventurer(name, direction, path, startPos);
       const tm = new TreasureMap();
       await tm.parseInputFile("tests/test-adv2.txt");
@@ -62,7 +61,7 @@ describe("Adventurer Test Suite", () => {
     ["Indiana", { x: 1, y: 1 }, Direction.SOUTH, "AADADA", { x: 0, y: 3 }, 1, 1],
     ["Indiana", { x: 1, y: 1 }, Direction.SOUTH, "AADADADAGA", { x: 1, y: 2 }, 2, 0],
   ])(
-    "should %s startpos: %s dir: %s with path %s arrive at position %s with Mountain and Treasor",
+    "should collect treasures: %s moves from %j and facing %s with path '%s' and ends at %j with %d collected, %d remaining",
     async (name, startPos, direction, path, endPos, expectedNbTreasor, nbTreasor) => {
       const adventurer = new Adventurer(name, direction, path, startPos);
       const tm = new TreasureMap();
@@ -79,7 +78,7 @@ describe("Adventurer Test Suite", () => {
   );
 
   it.each([["Lara", { x: 1, y: 1 }, Direction.SOUTH, { x: 0, y: 3 }, 3]])(
-    "should %s startpos: %s dir: %s must arrive at position %s with %s Treasors",
+    "should let %s start at %j facing %s and collect %d treasures at %j",
     async (name, startPos, direction, endPos, expectedNbTreasor) => {
       const tm = new TreasureMap();
       await tm.parseInputFile("tests/test-adv4.txt");

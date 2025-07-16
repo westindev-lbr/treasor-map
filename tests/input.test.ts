@@ -3,7 +3,7 @@ import { State } from "../src/enum";
 import { Row } from "../src/interface";
 import { TreasureMap } from "../src/treasuremap";
 
-describe("Read Input file", () => {
+describe("TreasureMap: parsing and initialization from input file", () => {
   const tm = new TreasureMap();
 
   beforeAll(async () => {
@@ -11,16 +11,16 @@ describe("Read Input file", () => {
     tm.init();
   });
 
-  it("should return a Configuration of MAP from C - 3 - 4 in input ( array[4][3] ) ", async () => {
+  it("should initialize a 4x3 map from 'C - 3 - 4' input", async () => {
     expect(tm.map).toBeDefined();
     expect(tm.map!.length).toBe(4);
   });
 
-  it("should be a cell of PLAIN at initialisation", async () => {
+  it("should initialize all cells as PLAIN by default", async () => {
     expect(tm.map![0][0].state).toBe(State.PLAIN);
   });
 
-  it("should have an id number following arithmetic index", () => {
+  it("should assign correct arithmetic ID to each cell", () => {
     expect(tm.map![0][0].id).toBe(0);
     expect(tm.map![0][1].id).toBe(1);
     expect(tm.map![0][2].id).toBe(2);
@@ -28,35 +28,35 @@ describe("Read Input file", () => {
     expect(tm.map![3][2].id).toBe(11);
   });
 
-  it("should have MOUNTAIN cells", () => {
+  it("should include MOUNTAIN cells in parsed pieces", () => {
     expect(tm.pieces).toBeTruthy();
-    expect(tm.pieces).toEqual(expect.arrayContaining([{ key: "M", x: 1, y: 1 } as Row]));
+    expect(tm.pieces).toEqual(expect.arrayContaining([{ key: State.MOUNTAIN, x: 1, y: 1 } as Row]));
   });
 
-  it("should the map has a MOUNTAIN in pos(1,1) and pos(2,2)", () => {
+  it("should place MOUNTAIN cells at positions (1,1) and (2,2)", () => {
     expect(tm.map[1][1].state).toBe(State.MOUNTAIN);
     expect(tm.map[2][2].state).toBe(State.MOUNTAIN);
   });
 
-  it("should have TREASOR cells", () => {
+  it("should include TREASURE cells in parsed pieces", () => {
     expect(tm.pieces).toBeTruthy();
-    expect(tm.pieces).toEqual(expect.arrayContaining([{ key: "T", x: 0, y: 3, nb: 2 } as Row]));
+    expect(tm.pieces).toEqual(expect.arrayContaining([{ key: State.TREASURE, x: 0, y: 3, nb: 2 } as Row]));
   });
-  it("should the map has a TREASOR in pos(0,3) and nb : 2", () => {
+  it("should place a TREASURE at (0,3) with 2 treasures", () => {
     expect(tm.map[3][0].state).toBe(State.TREASURE);
     expect(tm.map[3][0].nb).toBe(2);
   });
-  it("should the map has a TREASOR in pos(1,3) and nb : 1", () => {
+  it("should place a TREASURE at (1,3) with 1 treasure", () => {
     expect(tm.map[3][1].state).toBe(State.TREASURE);
     expect(tm.map[3][1].nb).toBe(1);
   });
-  it("should have an ADVENTURE", () => {
+  it("should include an ADVENTURER in parsed pieces", () => {
     expect(tm.pieces).toBeTruthy();
     expect(tm.pieces).toEqual(
       expect.arrayContaining([{ key: "A", name: "Indiana", x: 1, y: 1, orientation: "S", path: "AADADA" } as Row])
     );
   });
-  it("should the map has an ADVENTURER in pos(1,1)", () => {
+  it("should place an ADVENTURER at (1,1)", () => {
     expect(tm.map[1][1].state).toBe(State.MOUNTAIN);
     expect(tm.map[1][1].perso).toBeInstanceOf(Adventurer);
   });
