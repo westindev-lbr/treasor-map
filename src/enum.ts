@@ -1,7 +1,9 @@
 export enum State {
+  CARD = "C",
   PLAIN = "P",
   MOUNTAIN = "M",
-  TREASOR = "T",
+  TREASURE = "T",
+  ADVENTURER = "A",
 }
 
 export enum Direction {

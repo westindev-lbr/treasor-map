@@ -17,8 +17,5 @@ export interface Cell {
   x: number;
   y: number;
   perso?: Adventurer;
-}
-
-export interface TreasorCell extends Cell {
-  nb: number;
+  nb?: number;
 }

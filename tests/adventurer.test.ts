@@ -1,8 +1,6 @@
-import { Dir } from "fs";
 import { Adventurer } from "../src/adventurer";
 import { Direction, State } from "../src/enum";
-import { TreasorCell } from "../src/interface";
-import { TreasorMap } from "../src/treasormap";
+import { TreasureMap } from "../src/treasormap";
 
 describe("Adventurer Test Suite", () => {
   it.each([
@@ -15,7 +13,7 @@ describe("Adventurer Test Suite", () => {
   ])(
     "should %s have the right direction from input: %s with path: %s to expected direction: %s",
     (name, direction, path, expectedOrientation) => {
-      const adventurer = new Adventurer(name, direction, path);
+      const adventurer = new Adventurer(name, direction, path, { x: 1, y: 1 });
       expect(adventurer.direction).toBe(expectedOrientation);
       if (Object.values(Direction).includes(adventurer.direction)) {
         expect(adventurer.direction).toBeDefined();
@@ -37,12 +35,12 @@ describe("Adventurer Test Suite", () => {
   ])(
     "should %s startpos: %s dir: %s with path %s arrive at position %s",
     async (name, startPos, direction, path, endPos, expectedDir) => {
-      const adventurer = new Adventurer(name, direction, path);
-      const tm = new TreasorMap();
+      const adventurer = new Adventurer(name, direction, path, startPos);
+      const tm = new TreasureMap();
       await tm.parseInputFile("tests/test-adv1.txt");
       tm.init();
       tm.map[startPos.y][startPos.x].perso = adventurer;
-      tm.map[startPos.y][startPos.x].perso!.move(tm.map, startPos);
+      tm.map[startPos.y][startPos.x].perso!.move(tm.map);
       expect(tm.map[endPos.y][endPos.x].perso).toBeDefined();
       expect(tm.map[endPos.y][endPos.x].perso?.direction).toBe(expectedDir);
     }
@@ -50,12 +48,12 @@ describe("Adventurer Test Suite", () => {
   it.each([["Indiana", { x: 1, y: 1 }, "S", "AADADA", { x: 0, y: 3 }]])(
     "should %s startpos: %s dir: %s with path %s arrive at position %s whith Mountain obstacle",
     async (name, startPos, direction, path, endPos) => {
-      const adventurer = new Adventurer(name, direction, path);
-      const tm = new TreasorMap();
+      const adventurer = new Adventurer(name, direction, path, startPos);
+      const tm = new TreasureMap();
       await tm.parseInputFile("tests/test-adv2.txt");
       tm.init();
       tm.map[startPos.y][startPos.x].perso = adventurer;
-      tm.map[startPos.y][startPos.x].perso!.move(tm.map, startPos);
+      tm.map[startPos.y][startPos.x].perso!.move(tm.map);
       expect(tm.map[endPos.y][endPos.x].perso).toBeDefined();
     }
   );
@@ -66,16 +64,16 @@ describe("Adventurer Test Suite", () => {
   ])(
     "should %s startpos: %s dir: %s with path %s arrive at position %s with Mountain and Treasor",
     async (name, startPos, direction, path, endPos, expectedNbTreasor, nbTreasor) => {
-      const adventurer = new Adventurer(name, direction, path);
-      const tm = new TreasorMap();
+      const adventurer = new Adventurer(name, direction, path, startPos);
+      const tm = new TreasureMap();
       await tm.parseInputFile("tests/test-adv3.txt");
       tm.init();
       tm.map[startPos.y][startPos.x].perso = adventurer;
-      tm.map[startPos.y][startPos.x].perso!.move(tm.map, startPos);
-      const treasorCell = tm.map[2][1] as TreasorCell;
+      tm.map[startPos.y][startPos.x].perso!.move(tm.map);
+      const treasorCell = tm.map[2][1];
       expect(tm.map[endPos.y][endPos.x].perso).toBeDefined();
-      expect(treasorCell.state).toEqual(State.TREASOR);
-      expect(adventurer.items.get(State.TREASOR)).toBe(expectedNbTreasor);
+      expect(treasorCell.state).toEqual(State.TREASURE);
+      expect(adventurer.items.get(State.TREASURE)).toBe(expectedNbTreasor);
       expect(treasorCell.nb).toBe(nbTreasor);
     }
   );
@@ -83,7 +81,7 @@ describe("Adventurer Test Suite", () => {
   it.each([["Lara", { x: 1, y: 1 }, "S", { x: 0, y: 3 }, 3]])(
     "should %s startpos: %s dir: %s must arrive at position %s with %s Treasors",
     async (name, startPos, direction, endPos, expectedNbTreasor) => {
-      const tm = new TreasorMap();
+      const tm = new TreasureMap();
       await tm.parseInputFile("tests/test-adv4.txt");
       tm.init();
       const lara = tm.map[startPos.y][startPos.x].perso;
@@ -91,10 +89,10 @@ describe("Adventurer Test Suite", () => {
       expect(lara?.name).toBe(name);
       expect(lara?.direction).toBe(direction);
 
-      tm.map[startPos.y][startPos.x].perso!.move(tm.map, startPos);
+      tm.map[startPos.y][startPos.x].perso!.move(tm.map);
 
       expect(tm.map[endPos.y][endPos.x].perso).toBeDefined();
-      expect(lara?.items.get(State.TREASOR)).toBe(expectedNbTreasor);
+      expect(lara?.items.get(State.TREASURE)).toBe(expectedNbTreasor);
     }
   );
 });

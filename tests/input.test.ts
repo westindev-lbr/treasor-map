@@ -1,10 +1,10 @@
 import { Adventurer } from "../src/adventurer";
 import { State } from "../src/enum";
-import { Row, TreasorCell } from "../src/interface";
-import { TreasorMap } from "../src/treasormap";
+import { Row } from "../src/interface";
+import { TreasureMap } from "../src/treasormap";
 
 describe("Read Input file", () => {
-  const tm = new TreasorMap();
+  const tm = new TreasureMap();
 
   beforeAll(async () => {
     await tm.parseInputFile("tests/test.txt");
@@ -43,12 +43,12 @@ describe("Read Input file", () => {
     expect(tm.pieces).toEqual(expect.arrayContaining([{ key: "T", x: 0, y: 3, nb: 2 } as Row]));
   });
   it("should the map has a TREASOR in pos(0,3) and nb : 2", () => {
-    expect(tm.map[3][0].state).toBe(State.TREASOR);
-    expect((tm.map[3][0] as TreasorCell).nb).toBe(2);
+    expect(tm.map[3][0].state).toBe(State.TREASURE);
+    expect(tm.map[3][0].nb).toBe(2);
   });
   it("should the map has a TREASOR in pos(1,3) and nb : 1", () => {
-    expect(tm.map[3][1].state).toBe(State.TREASOR);
-    expect((tm.map[3][1] as TreasorCell).nb).toBe(1);
+    expect(tm.map[3][1].state).toBe(State.TREASURE);
+    expect(tm.map[3][1].nb).toBe(1);
   });
   it("should have an ADVENTURE", () => {
     expect(tm.pieces).toBeTruthy();
